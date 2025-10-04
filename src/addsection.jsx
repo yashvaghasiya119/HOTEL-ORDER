@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setDatas } from "./reduxstore/dataslice";
 
@@ -9,6 +8,12 @@ export function Addsection() {
   const [counts, setCounts] = useState({}); // Track counts for each item dynamically
   const dispatch = useDispatch();
 
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("data")) || [];
+    setdata(storedData);
+  }, []);
+
   function formsubmit(e) {
     e.preventDefault();
     // Add the new item to the data array if it's not already added
@@ -16,6 +21,7 @@ export function Addsection() {
       setdata((prev) => [...prev, input]);
     }
     setinput("");
+    localStorage.setItem("data", JSON.stringify([...data, input]));
   }
 
   function deleteitem(item) {
@@ -31,6 +37,12 @@ export function Addsection() {
       const newCount = (prevCounts[item] || 0) + delta;
       return { ...prevCounts, [item]: Math.max(newCount, 0) }; // Prevent negative count
     });
+  }
+  
+  function clearData(){
+    setdata([]);
+    setCounts({});
+    localStorage.removeItem("data");
   }
 
   return (
@@ -48,6 +60,11 @@ export function Addsection() {
             Submit
           </button>
         </form>
+      </div>
+      <div className="top-bar">
+        <button className="clear-btn" onClick={clearData}>
+          Clear All Data
+        </button>
       </div>
       <div className="container">
         {data &&

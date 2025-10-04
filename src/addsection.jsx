@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setDatas } from "./reduxstore/dataslice";
 
@@ -7,7 +6,14 @@ export function Addsection() {
   const [input, setinput] = useState("");
   const [data, setdata] = useState([]);
   const [counts, setCounts] = useState({}); // Track counts for each item dynamically
+  const [showConfirm, setShowConfirm] = useState(false); // State to show/hide confirmation popup
   const dispatch = useDispatch();
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("data")) || [];
+    setdata(storedData);
+  }, []);
 
   function formsubmit(e) {
     e.preventDefault();
@@ -49,6 +55,11 @@ export function Addsection() {
           </button>
         </form>
       </div>
+      <div className="top-bar">
+        <button className="clear-btn" onClick={() => setShowConfirm(true)}>
+          Clear All Data
+        </button>
+      </div>
       <div className="container">
         {data &&
           data.map((item, i) => {
@@ -82,6 +93,28 @@ export function Addsection() {
             );
           })}
       </div>
+      {showConfirm && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <p>Are you sure you want to delete all data?</p>
+            <button
+              className="popup-btn yes"
+              onClick={() => {
+                clearData();
+                setShowConfirm(false);
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className="popup-btn no"
+              onClick={() => setShowConfirm(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -113,7 +113,7 @@
 .top-bar {
     display: flex;
     justify-content: flex-end;
-    margin: 10px 0;
+    margin: 10px 3vw;
   }
   
   .clear-btn {

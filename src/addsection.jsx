@@ -22,6 +22,7 @@ export function Addsection() {
       setdata((prev) => [...prev, input]);
     }
     setinput("");
+    localStorage.setItem("data", JSON.stringify([...data, input]));
   }
 
   function deleteitem(item) {
